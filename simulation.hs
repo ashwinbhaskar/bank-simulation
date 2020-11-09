@@ -1,4 +1,4 @@
-module Simulation where
+module Simulation (customerArriveProbability, customerProcessMeanTime) where
 
 import Types
 
@@ -14,7 +14,6 @@ customerArriveProbability t =
     let x = -1 * ((fromIntegral t) / (fromIntegral customerArriveProbabilityAlpha))
     in Just (1 - (e ** x))
 
-
 customerProcessTime :: CustomerType -> Double -> Maybe CustomerProcessTimeSeconds
 customerProcessTime _ x | x < 0 || x > 1 = Nothing
 customerProcessTime (CustomerType alpha beta) x = 
@@ -23,3 +22,11 @@ customerProcessTime (CustomerType alpha beta) x =
         b = (1 - x) ^^ (beta - 1)
     in
         Just (p * a * b)
+
+customerProcessMeanTime :: CustomerType -> Maybe CustomerProcessTimeSeconds
+customerProcessMeanTime cType@(CustomerType alpha beta) = 
+    let
+        meanPoint = (fromIntegral alpha) / (fromIntegral (alpha + beta))
+    in
+        customerProcessTime cType meanPoint
+
